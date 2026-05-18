@@ -36,3 +36,6 @@ mongoose.connect(URL)
   .catch((error) => {
     console.log(`Error occured in Database Connection ${error}`)
   })
+
+
+export default app
