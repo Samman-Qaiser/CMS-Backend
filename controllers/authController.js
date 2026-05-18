@@ -1,10 +1,10 @@
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
 
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
+import { User } from '../models/User.js';
 // ─── Helper: Token Generate ──────────────────────────
-const generateToken = (user) => {
+export const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, role: user.role },
     process.env.JWT_SECRET,
@@ -14,7 +14,7 @@ const generateToken = (user) => {
 
 // ─── SIGNUP ──────────────────────────────────────────
 // POST /api/auth/signup
-const signup = async (req, res) => {
+export const signup = async (req, res) => {
   try {
     const { firstName, lastName, username, email, password, confirmPassword } = req.body;
 
@@ -68,7 +68,7 @@ const signup = async (req, res) => {
 
 // ─── SIGNIN ──────────────────────────────────────────
 // POST /api/auth/signin
-const signin = async (req, res) => {
+export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -117,7 +117,7 @@ const signin = async (req, res) => {
 
 // ─── FORGOT PASSWORD ─────────────────────────────────
 // POST /api/auth/forgot-password
-const forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -161,7 +161,7 @@ const forgotPassword = async (req, res) => {
 
 // ─── RESET PASSWORD ──────────────────────────────────
 // PUT /api/auth/reset-password/:token
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   try {
     const { password, confirmPassword } = req.body;
 
@@ -203,4 +203,3 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { signup, signin, forgotPassword, resetPassword };
