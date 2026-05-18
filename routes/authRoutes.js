@@ -4,5 +4,5 @@ const authRouter=express.Router()
 authRouter.post('/signin',signin)
 authRouter.post('/signup',signup)
 authRouter.post('/forgot-password',forgotPassword)
-authRouter.post('/reset-password/:token',resetPassword)
+authRouter.put('/reset-password/:token',resetPassword)
 export default authRouter
