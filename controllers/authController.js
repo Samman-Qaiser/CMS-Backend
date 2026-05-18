@@ -116,7 +116,7 @@ export const signin = async (req, res) => {
 };
 
 // ─── FORGOT PASSWORD ─────────────────────────────────
-// POST /api/auth/forgot-password
+
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -144,7 +144,7 @@ export const forgotPassword = async (req, res) => {
     await user.save();
 
     // Reset URL — frontend ka link
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
     // TODO: Email send karna hai yahan — nodemailer baad mein lagayein ge
     console.log("Reset URL:", resetUrl);
@@ -160,7 +160,7 @@ export const forgotPassword = async (req, res) => {
 };
 
 // ─── RESET PASSWORD ──────────────────────────────────
-// PUT /api/auth/reset-password/:token
+
 export const resetPassword = async (req, res) => {
   try {
     const { password, confirmPassword } = req.body;
