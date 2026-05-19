@@ -25,7 +25,10 @@ app.use('/api/auth', authRoutes)  // ← add
 app.use('/api/users', userRoutes)
 connectCloudinary()
 
-mongoose.connect(URL)
+mongoose.connect(URL,{
+  serverSelectionTimeoutMS: 30000,
+  socketTimeoutMS: 45000,
+})
   .then(() => {
     console.log('Database Connected Successfully')
     const server = http.createServer(app)
