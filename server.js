@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser'
 import connectCloudinary from './config/cloudinary.js'
 import authRoutes from './routes/authRoutes.js'  
 import userRoutes from './routes/userRoutes.js'
+import pageRoutes from './routes/pageRoutes.js'
 dotenv.config()
 
 const app = express()
@@ -23,6 +24,8 @@ app.get('/', (req, res) => {
 })
 app.use('/api/auth', authRoutes)  // ← add
 app.use('/api/users', userRoutes)
+
+app.use('/api/pages', pageRoutes)
 connectCloudinary()
 
 mongoose.connect(URL,{
