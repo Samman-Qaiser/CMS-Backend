@@ -1,5 +1,5 @@
 import {User} from '../models/User.js'
-import cloudinary from '../config/cloudinary.js'
+
 import bcrypt from 'bcryptjs'
 import { cloudinary } from '../config/cloudinary.js'
 
@@ -14,7 +14,8 @@ const uploadToCloudinary = async (file) => {
   })
   return result.secure_url
 }
-// ─── ADD USER (Admin) ────────────────────────────────
+// ─── ADD USER (Admin) ─────────────────────────
+// ───────
 // POST /api/users/add
 export const addUser = async (req, res) => {
   try {
