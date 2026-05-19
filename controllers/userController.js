@@ -1,7 +1,7 @@
 import {User} from '../models/User.js'
 import cloudinary from '../config/cloudinary.js'
 import bcrypt from 'bcryptjs'
-
+import { cloudinary } from '../config/cloudinary.js'
 
 
 // ─── Helper: Cloudinary Upload ───────────────────────
