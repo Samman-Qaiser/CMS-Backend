@@ -2,6 +2,18 @@ import {User} from '../models/User.js'
 import cloudinary from '../config/cloudinary.js'
 import bcrypt from 'bcryptjs'
 
+
+
+// ─── Helper: Cloudinary Upload ───────────────────────
+const uploadToCloudinary = async (file) => {
+  const b64 = Buffer.from(file.buffer).toString('base64')
+  const dataURI = `data:${file.mimetype};base64,${b64}`
+  const result = await cloudinary.uploader.upload(dataURI, {
+    folder: 'cms/users',
+    transformation: [{ width: 500, height: 500, crop: 'fill' }],
+  })
+  return result.secure_url
+}
 // ─── ADD USER (Admin) ────────────────────────────────
 // POST /api/users/add
 export const addUser = async (req, res) => {
@@ -38,10 +50,10 @@ export const addUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12)
 
     // Profile image — cloudinary se url aayega
-    let profileImage = null
-    if (req.file) {
-      profileImage = req.file.path
-    }
+   let profileImage = null
+if (req.file) {
+  profileImage = await uploadToCloudinary(req.file)
+}
 
     const user = await User.create({
       firstName,
@@ -142,15 +154,14 @@ export const updateUser = async (req, res) => {
       isActive,
     } = req.body
 
-    // Nai image aayi hai toh purani cloudinary se delete karo
     if (req.file) {
-      if (user.profileImage) {
-        // Cloudinary public_id nikalo url se
-        const publicId = user.profileImage.split('/').slice(-2).join('/').split('.')[0]
-        await cloudinary.uploader.destroy(publicId)
-      }
-      user.profileImage = req.file.path
-    }
+  // Purani image delete karo
+  if (user.profileImage) {
+    const publicId = 'cms/users/' + user.profileImage.split('/').pop().split('.')[0]
+    await cloudinary.uploader.destroy(publicId)
+  }
+  user.profileImage = await uploadToCloudinary(req.file)
+}
 
     // Fields update karo
     user.firstName = firstName || user.firstName
