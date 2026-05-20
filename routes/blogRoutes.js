@@ -7,7 +7,7 @@ import {
   updateBlog,
   deleteBlog,
 } from '../controllers/blogController.js'
-import upload from '../middleware/upload.js'
+import upload from '../midleware/upload.js'
 
 const router = express.Router()
 
