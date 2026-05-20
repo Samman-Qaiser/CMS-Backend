@@ -27,11 +27,7 @@ export const createTag = async (req, res) => {
 // GET /api/tags
 export const getAllTags = async (req, res) => {
   try {
-    const keyword = req.query.search
-      ? { name: { $regex: req.query.search, $options: 'i' } }
-      : {}
-
-    const tags = await Tag.find(keyword).sort({ createdAt: -1 })
+    const tags = await Tag.find().sort({ createdAt: -1 })
 
     res.status(200).json({ success: true, total: tags.length, tags })
   } catch (error) {

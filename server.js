@@ -10,6 +10,8 @@ import userRoutes from './routes/userRoutes.js'
 import pageRoutes from './routes/pageRoutes.js'
 import categoryRoutes from './routes/categoryRoutes.js'
 import tagRoutes from './routes/tagRoutes.js'
+import blogRoutes from './routes/blogRoutes.js'
+import commentRoutes from './routes/commentRoutes.js'
 dotenv.config()
 
 const app = express()
@@ -27,9 +29,10 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes)  // ← add
 app.use('/api/users', userRoutes)
 app.use('/api/pages', pageRoutes)
-
 app.use('/api/categories', categoryRoutes)
 app.use('/api/tags', tagRoutes)
+app.use('/api/blogs', blogRoutes)
+app.use('/api/comments', commentRoutes)
 connectCloudinary()
 
 mongoose.connect(URL,{

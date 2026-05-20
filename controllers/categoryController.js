@@ -32,12 +32,7 @@ export const createCategory = async (req, res) => {
 // GET /api/categories
 export const getAllCategories = async (req, res) => {
   try {
-    // Search feature
-    const keyword = req.query.search
-      ? { name: { $regex: req.query.search, $options: 'i' } }
-      : {}
-
-    const categories = await Category.find(keyword)
+    const categories = await Category.find()
       .populate('parentCategory', 'name slug')
       .sort({ createdAt: -1 })
 
