@@ -20,7 +20,11 @@ const configurationSchema = new mongoose.Schema(
     },
     inputType: {
       type: String,
-      enum: ['text', 'image', 'select', 'number', 'email', 'textarea', 'boolean'],
+     inputType: {
+  type: String,
+  enum: ['text', 'image', 'select', 'number', 'email', 'textarea', 'boolean', 'file', 'checkbox', 'radio'],
+  default: 'text',
+},
       default: 'text',
     },
     description: {
