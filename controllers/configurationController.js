@@ -1,5 +1,4 @@
 import Configuration from '../models/Configuration.js'
-
 // ─── CREATE CONFIGURATION ────────────────────────────
 // POST /api/configurations
 export const createConfiguration = async (req, res) => {
