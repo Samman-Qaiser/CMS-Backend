@@ -16,7 +16,8 @@ import menuRoutes from './routes/menuRoutes.js'
 import contactRoutes from './routes/contactRoutes.js'
 import emailRoutes from './routes/emailRoutes.js'
 import subscriberRoutes from './routes/subscriberRoutes.js'
-
+import siteConfigRoutes from './routes/siteConfigRoutes.js'
+import configurationRoutes from './routes/configurationRoutes.js'
 dotenv.config()
 
 const app = express()
@@ -42,6 +43,9 @@ app.use('/api/menus', menuRoutes)
 app.use('/api/contacts', contactRoutes)
 app.use('/api/emails', emailRoutes)
 app.use('/api/subscribers', subscriberRoutes)
+
+app.use('/api/site-config', siteConfigRoutes)
+app.use('/api/configurations', configurationRoutes)
 connectCloudinary()
 
 mongoose.connect(URL,{
