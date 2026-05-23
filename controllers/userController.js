@@ -365,3 +365,25 @@ export const updateInstructorStatus = async (req, res) => {
     res.status(500).json({ success: false, message: error.message })
   }
 }
+// ─── GET ALL INSTRUCTOR APPLICATIONS ─────────────
+// GET /api/users/instructor-applications
+export const getInstructorApplications = async (req, res) => {
+  try {
+    const applications = await User.find({
+      instructorStatus: { $in: ['pending', 'approved', 'rejected'] }
+    })
+    .select('-password -resetPasswordToken -resetPasswordExpire')
+    .sort({ updatedAt: -1 })
+
+    const total = await User.countDocuments({ instructorStatus: 'pending' })
+
+    res.status(200).json({
+      success: true,
+      pendingCount: total,
+      total: applications.length,
+      applications,
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
