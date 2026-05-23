@@ -52,9 +52,14 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "manager", "customer"],
+        enum: ['admin', 'manager', 'customer', 'instructor'],
       default: "customer",
     },
+    instructorStatus: {
+  type: String,
+  enum: ['none', 'pending', 'approved', 'rejected'],
+  default: 'none',
+},
     isActive: {
       type: Boolean,
       default: true,
