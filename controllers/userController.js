@@ -1,5 +1,6 @@
 import {User} from '../models/User.js'
-
+import Instructor from '../models/Instructor.js'
+import { Resend } from 'resend'
 import bcrypt from 'bcryptjs'
 import { cloudinary } from '../config/cloudinary.js'
 
@@ -221,6 +222,144 @@ export const deleteUser = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'User deleted successfully',
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+// ─── APPLY FOR INSTRUCTOR ─────────────────────────
+// POST /api/users/apply-instructor
+export const applyForInstructor = async (req, res) => {
+  try {
+    const { userId } = req.body
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User ID is required' })
+    }
+
+    const user = await User.findById(userId)
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' })
+    }
+
+    // Already instructor hai?
+    if (user.role === 'instructor') {
+      return res.status(400).json({ success: false, message: 'You are already an instructor' })
+    }
+
+    // Already pending hai?
+    if (user.instructorStatus === 'pending') {
+      return res.status(400).json({ success: false, message: 'Your application is already pending' })
+    }
+
+    user.instructorStatus = 'pending'
+    await user.save()
+
+    // Admin ko email notification
+    await resend.emails.send({
+      from: 'CMS <onboarding@resend.dev>',
+      to: process.env.ADMIN_EMAIL,
+      subject: `New Instructor Application from ${user.firstName} ${user.lastName}`,
+      html: `
+        <h2>New Instructor Application</h2>
+        <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Username:</strong> ${user.username}</p>
+        <p>Please login to admin dashboard to review this application.</p>
+      `,
+    })
+
+    res.status(200).json({
+      success: true,
+      message: 'Application submitted successfully. Please wait for admin approval.',
+      user: {
+        id: user._id,
+        instructorStatus: user.instructorStatus,
+      },
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+// ─── APPROVE / REJECT INSTRUCTOR ─────────────────
+// PUT /api/users/:id/instructor-status
+export const updateInstructorStatus = async (req, res) => {
+  try {
+    const { status } = req.body
+
+    if (!status) {
+      return res.status(400).json({ success: false, message: 'Status is required' })
+    }
+
+    const validStatuses = ['approved', 'rejected']
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status' })
+    }
+
+    const user = await User.findById(req.params.id)
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' })
+    }
+
+    user.instructorStatus = status
+
+    // Approve hone pe role instructor ho jaye
+    if (status === 'approved') {
+      user.role = 'instructor'
+
+      // Instructor profile auto create karo
+      const existingInstructor = await Instructor.findOne({ user: user._id })
+      if (!existingInstructor) {
+        await Instructor.create({
+          user: user._id,
+          isVerified: true,
+          isActive: true,
+        })
+      }
+
+      // User ko approval email
+      await resend.emails.send({
+        from: 'CMS <onboarding@resend.dev>',
+        to: user.email,
+        subject: 'Congratulations! Your Instructor Application is Approved',
+        html: `
+          <h2>Congratulations ${user.firstName}!</h2>
+          <p>Your instructor application has been approved.</p>
+          <p>You can now login and access your instructor dashboard.</p>
+        `,
+      })
+    } else {
+      // Reject hone pe email
+      await resend.emails.send({
+        from: 'CMS <onboarding@resend.dev>',
+        to: user.email,
+        subject: 'Instructor Application Status Update',
+        html: `
+          <h2>Hello ${user.firstName},</h2>
+          <p>Unfortunately, your instructor application has been rejected.</p>
+          <p>Please contact support for more information.</p>
+        `,
+      })
+    }
+
+    await user.save()
+
+    res.status(200).json({
+      success: true,
+      message: `Instructor application ${status} successfully`,
+      user: {
+        id: user._id,
+        role: user.role,
+        instructorStatus: user.instructorStatus,
+      },
     })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
