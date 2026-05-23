@@ -14,11 +14,12 @@ import upload from '../midleware/upload.js'
 const router = express.Router()
 
 router.post('/add', upload.single('profileImage'), addUser)
+router.get('/instructor-applications', getInstructorApplications)
 router.get('/', getAllUsers)
 router.get('/:id', getUserById)
 router.put('/:id', upload.single('profileImage'), updateUser)
 router.delete('/:id', deleteUser)
 router.post('/apply-instructor', applyForInstructor)
 router.put('/:id/instructor-status', updateInstructorStatus)
-router.get('/instructor-applications', getInstructorApplications)
+
 export default router
