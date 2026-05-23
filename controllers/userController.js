@@ -387,3 +387,35 @@ export const getInstructorApplications = async (req, res) => {
     res.status(500).json({ success: false, message: error.message })
   }
 }
+
+
+// backend/controllers/userController.js
+export const getUserApplicationStatus = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    
+    const user = await User.findById(userId)
+      .select('firstName lastName email role instructorStatus profileImage updatedAt createdAt');
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    
+    res.status(200).json({
+      success: true,
+      notifications: [{
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        instructorStatus: user.instructorStatus,
+        profileImage: user.profileImage,
+        updatedAt: user.updatedAt,
+        createdAt: user.createdAt
+      }]
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

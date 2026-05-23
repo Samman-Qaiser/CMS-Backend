@@ -8,6 +8,7 @@ import {
     applyForInstructor,
   updateInstructorStatus,
     getInstructorApplications,
+    getUserApplicationStatus,
 } from '../controllers/userController.js'
 import upload from '../midleware/upload.js'
 
@@ -21,6 +22,6 @@ router.get('/:id', getUserById)
 router.put('/:id', upload.single('profileImage'), updateUser)
 router.delete('/:id', deleteUser)
 router.post('/apply-instructor', applyForInstructor)
-
+router.get('/:id/application-status', getUserApplicationStatus);
 
 export default router
