@@ -19,7 +19,7 @@ import emailRoutes from './routes/emailRoutes.js'
 import subscriberRoutes from './routes/subscriberRoutes.js'
 import siteConfigRoutes from './routes/siteConfigRoutes.js'
 import configurationRoutes from './routes/configurationRoutes.js'
-
+import courseCategoryRoutes from './routes/courseCategoryRoutes.js'
 dotenv.config()
 
 const app = express()
@@ -123,6 +123,7 @@ app.use('/api/subscribers', subscriberRoutes)
 app.use('/api/site-config', siteConfigRoutes)
 app.use('/api/configurations', configurationRoutes)
 
+app.use('/api/course-categories', courseCategoryRoutes)
 connectCloudinary()
 
 // For local development only
