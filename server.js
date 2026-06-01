@@ -23,7 +23,8 @@ import courseCategoryRoutes from './routes/courseCategoryRoutes.js'
 import courseRoutes from './routes/courseRoutes.js'
 import chapterRoutes from './routes/chapterRoutes.js'
 import lessonRoutes from './routes/lessonRoutes.js'
-
+import enrollmentRoutes from './routes/enrollmentRoutes.js'
+import reviewRoutes from './routes/reviewRoutes.js'
 dotenv.config()
 
 const app = express()
@@ -130,7 +131,8 @@ app.use('/api/courses', courseRoutes)
 app.use('/api/course-categories', courseCategoryRoutes)
 app.use('/api/chapters', chapterRoutes)
 app.use('/api/lessons', lessonRoutes)
-
+app.use('/api/enrollments', enrollmentRoutes)
+app.use('/api/reviews', reviewRoutes)
 
 connectCloudinary()
 
