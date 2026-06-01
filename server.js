@@ -25,6 +25,9 @@ import chapterRoutes from './routes/chapterRoutes.js'
 import lessonRoutes from './routes/lessonRoutes.js'
 import enrollmentRoutes from './routes/enrollmentRoutes.js'
 import reviewRoutes from './routes/reviewRoutes.js'
+import transactionRoutes from './routes/transactionRoutes.js'
+import scheduleRoutes from './routes/scheduleRoutes.js'
+import liveClassRoutes from './routes/liveClassRoutes.js'
 dotenv.config()
 
 const app = express()
@@ -133,7 +136,9 @@ app.use('/api/chapters', chapterRoutes)
 app.use('/api/lessons', lessonRoutes)
 app.use('/api/enrollments', enrollmentRoutes)
 app.use('/api/reviews', reviewRoutes)
-
+app.use('/api/transactions', transactionRoutes)
+app.use('/api/schedules', scheduleRoutes)
+app.use('/api/live-classes', liveClassRoutes)
 connectCloudinary()
 
 // For local development only
