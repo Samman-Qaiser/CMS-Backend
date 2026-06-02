@@ -12,11 +12,7 @@ const scheduleSchema = new mongoose.Schema(
       required: [true, 'Title is required'],
       trim: true,
     },
-    course: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Course',
-      default: null,
-    },
+
     description: {
       type: String,
       default: null,
@@ -31,7 +27,7 @@ const scheduleSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['event', 'task', 'live_class'],
+      enum: ['event', 'task', 'live_class','meeting','reminder' ,'deadline'],
       default: 'event',
     },
     color: {
