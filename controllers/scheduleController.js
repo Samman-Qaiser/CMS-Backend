@@ -7,7 +7,6 @@ export const createSchedule = async (req, res) => {
     const {
       instructor,
       title,
-      course,
       description,
       startTime,
       endTime,
@@ -22,7 +21,6 @@ export const createSchedule = async (req, res) => {
     const schedule = await Schedule.create({
       instructor,
       title,
-      course: course || null,
       description,
       startTime,
       endTime,
@@ -89,7 +87,7 @@ export const updateSchedule = async (req, res) => {
 
     const {
       title,
-      course,
+     
       description,
       startTime,
       endTime,
@@ -99,7 +97,7 @@ export const updateSchedule = async (req, res) => {
     } = req.body
 
     schedule.title = title || schedule.title
-    schedule.course = course || schedule.course
+    
     schedule.description = description || schedule.description
     schedule.startTime = startTime || schedule.startTime
     schedule.endTime = endTime || schedule.endTime
