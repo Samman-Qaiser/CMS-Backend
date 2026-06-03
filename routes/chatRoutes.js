@@ -7,15 +7,15 @@ import {
   sendMessage,
   uploadChatFile,
 } from '../controllers/chatController.js'
-
+import { protect } from '../midleware/authMiddleware.js'
 import upload from '../midleware/upload.js'
 
 const router = express.Router()
 
-router.post('/conversations',  getOrCreateConversation)
-router.get('/conversations',  getMyConversations)
-router.get('/conversations/:conversationId/messages',  getMessages)
-router.post('/messages',  sendMessage)
-router.post('/messages/upload',  upload.single('file'), uploadChatFile)
+router.post('/conversations', protect, getOrCreateConversation)
+router.get('/conversations', protect, getMyConversations)
+router.get('/conversations/:conversationId/messages', protect, getMessages)
+router.post('/messages', protect, sendMessage)
+router.post('/messages/upload', protect, upload.single('file'), uploadChatFile)
 
 export default router
