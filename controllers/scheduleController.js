@@ -52,7 +52,6 @@ export const getAllSchedules = async (req, res) => {
           select: 'firstName lastName email profileImage username'
         }
       })
-      .populate('course', 'title slug')
       .sort({ startTime: 1 })
 
     res.status(200).json({ success: true, total: schedules.length, schedules })
@@ -72,7 +71,6 @@ export const getScheduleById = async (req, res) => {
           select: 'firstName lastName email profileImage username'
         }
       })
-      .populate('course', 'title slug')
 
     if (!schedule) {
       return res.status(404).json({ success: false, message: 'Schedule not found' })
