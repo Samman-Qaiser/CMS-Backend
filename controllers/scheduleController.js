@@ -37,7 +37,7 @@ export const createSchedule = async (req, res) => {
 // ─── GET ALL SCHEDULES ───────────────────────────────
 // GET /api/schedules
 // controllers/scheduleController.js
-export const getSchedules = async (req, res) => {
+export const getAllSchedules = async (req, res) => {
   try {
     const schedules = await Schedule.find()
       .populate({
