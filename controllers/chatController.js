@@ -53,6 +53,7 @@ export const getOrCreateConversation = async (req, res) => {
 }
 
 // GET my conversations
+// controllers/chatController.js
 export const getMyConversations = async (req, res) => {
   try {
     const userId = req.user._id
@@ -65,7 +66,19 @@ export const getMyConversations = async (req, res) => {
       })
       .sort({ updatedAt: -1 })
 
-    res.status(200).json({ success: true, conversations })
+    // Har conversation ka unread count nikalo
+    const conversationsWithUnread = await Promise.all(
+      conversations.map(async (convo) => {
+        const unreadCount = await Message.countDocuments({
+          conversation: convo._id,
+          readBy: { $nin: [userId] },
+          sender: { $ne: userId },
+        })
+        return { ...convo.toObject(), unreadCount }
+      })
+    )
+
+    res.status(200).json({ success: true, conversations: conversationsWithUnread })
   } catch (err) {
     res.status(500).json({ success: false, message: err.message })
   }
@@ -151,6 +164,28 @@ export const uploadChatFile = async (req, res) => {
     await message.populate('sender', 'firstName lastName profileImage')
 
     res.status(201).json({ success: true, message })
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+
+// controllers/chatController.js mein add karo
+export const markAsRead = async (req, res) => {
+  try {
+    const { conversationId } = req.params
+    const userId = req.user._id
+
+    await Message.updateMany(
+      {
+        conversation: conversationId,
+        readBy: { $nin: [userId] },
+        sender: { $ne: userId },
+      },
+      { $addToSet: { readBy: userId } }
+    )
+
+    res.status(200).json({ success: true })
   } catch (err) {
     res.status(500).json({ success: false, message: err.message })
   }

@@ -5,7 +5,7 @@ import {
   getMyConversations,
   getMessages,
   sendMessage,
-  uploadChatFile,
+  uploadChatFile,markAsRead
 } from '../controllers/chatController.js'
 import { protect } from '../midleware/authMiddleware.js'
 import upload from '../midleware/upload.js'
@@ -17,5 +17,7 @@ router.get('/conversations', protect, getMyConversations)
 router.get('/conversations/:conversationId/messages', protect, getMessages)
 router.post('/messages', protect, sendMessage)
 router.post('/messages/upload', protect, upload.single('file'), uploadChatFile)
+
+router.put('/conversations/:conversationId/read', protect, markAsRead)
 
 export default router
