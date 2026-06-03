@@ -247,7 +247,25 @@ export const getInstructorStats = async (req, res) => {
       { $sort: { '_id.year': 1, '_id.month': 1 } },
       { $limit: 12 },
     ])
-
+// Monthly Students — last 12 months
+const monthlyStudents = await Enrollment.aggregate([
+  {
+    $match: {
+      course: { $in: courseIds },
+    },
+  },
+  {
+    $group: {
+      _id: {
+        month: { $month: '$createdAt' },
+        year: { $year: '$createdAt' },
+      },
+      total: { $sum: 1 },
+    },
+  },
+  { $sort: { '_id.year': 1, '_id.month': 1 } },
+  { $limit: 12 },
+])
     res.status(200).json({
       success: true,
       stats: {
@@ -261,6 +279,7 @@ export const getInstructorStats = async (req, res) => {
       latestTransactions,
       popularCourses,
       monthlyEarnings,
+      monthlyStudents,
     })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
