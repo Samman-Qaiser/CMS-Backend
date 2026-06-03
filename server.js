@@ -29,9 +29,18 @@ import transactionRoutes from './routes/transactionRoutes.js'
 import scheduleRoutes from './routes/scheduleRoutes.js'
 import liveClassRoutes from './routes/liveClassRoutes.js'
 import instructorRoutes from './routes/instructorRoutes.js'
+import chatRoutes from './routes/chatRoutes.js'
+import { initChatSocket } from './socket/chatSocket.js'
+import { Server } from 'socket.io'
 dotenv.config()
 
 const app = express()
+const server = http.createServer(app)
+const io = new Server(server, {
+  cors: { origin: '*' }
+})
+
+initChatSocket(io)
 const PORT = process.env.PORT || 3000
 const URL = process.env.MONGODB_URL
 
@@ -141,12 +150,13 @@ app.use('/api/transactions', transactionRoutes)
 app.use('/api/schedules', scheduleRoutes)
 app.use('/api/live-classes', liveClassRoutes)
 app.use('/api/instructors', instructorRoutes)
+app.use("/api", chatRoutes);
 connectCloudinary()
 
 // For local development only
 if (process.env.NODE_ENV !== 'production') {
   connectDB().then(() => {
-    const server = http.createServer(app)
+ 
     server.listen(PORT, () => {
       console.log(`Server started running successfully on ${PORT} Port`)
     })
