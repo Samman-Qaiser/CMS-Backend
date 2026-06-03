@@ -1,6 +1,6 @@
 // middleware/authMiddleware.js
 import jwt from 'jsonwebtoken'
-import User from '../models/User.js'
+import {User} from '../models/User.js'
 
 export const protect = async (req, res, next) => {
   let token
@@ -15,9 +15,12 @@ export const protect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    console.log('decoded:', decoded) // <-- yeh add karo temporarily
     req.user = await User.findById(decoded.id).select('-password')
+    console.log('req.user:', req.user) // <-- yeh bhi
     next()
   } catch (err) {
-    return res.status(401).json({ success: false, message: 'Token invalid or expired' })
+    console.log('JWT Error:', err.message) // <-- error detail dekhne ke liye
+    return res.status(401).json({ success: false, message: err.message }) // <-- exact error dikhao
   }
 }
