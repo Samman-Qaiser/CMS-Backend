@@ -33,13 +33,18 @@ export const createSchedule = async (req, res) => {
     res.status(500).json({ success: false, message: error.message })
   }
 }
-
 // ─── GET ALL SCHEDULES ───────────────────────────────
-// GET /api/schedules
-// controllers/scheduleController.js
 export const getAllSchedules = async (req, res) => {
   try {
-    const schedules = await Schedule.find()
+    const instructorFilter = req.query.instructor ? { instructor: req.query.instructor } : {}
+    const statusFilter = req.query.status ? { status: req.query.status } : {}
+    const typeFilter = req.query.type ? { type: req.query.type } : {}
+
+    const schedules = await Schedule.find({
+      ...instructorFilter,
+      ...statusFilter,
+      ...typeFilter,
+    })
       .populate({
         path: 'instructor',
         populate: {
@@ -47,19 +52,16 @@ export const getAllSchedules = async (req, res) => {
           select: 'firstName lastName email profileImage username'
         }
       })
-      .sort({ startTime: 1 });
-    
-    res.status(200).json({
-      success: true,
-      total: schedules.length,
-      schedules
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+      .populate('course', 'title slug')
+      .sort({ startTime: 1 })
 
-// For single schedule
+    res.status(200).json({ success: true, total: schedules.length, schedules })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+// ─── GET SCHEDULE BY ID ──────────────────────────────
 export const getScheduleById = async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id)
@@ -69,20 +71,18 @@ export const getScheduleById = async (req, res) => {
           path: 'user',
           select: 'firstName lastName email profileImage username'
         }
-      });
-    
+      })
+      .populate('course', 'title slug')
+
     if (!schedule) {
-      return res.status(404).json({ success: false, message: 'Schedule not found' });
+      return res.status(404).json({ success: false, message: 'Schedule not found' })
     }
-    
-    res.status(200).json({
-      success: true,
-      schedule
-    });
+
+    res.status(200).json({ success: true, schedule })
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message })
   }
-};
+}
 
 // ─── UPDATE SCHEDULE ─────────────────────────────────
 // PUT /api/schedules/:id
