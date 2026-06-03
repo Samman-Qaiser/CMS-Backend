@@ -150,7 +150,7 @@ app.use('/api/transactions', transactionRoutes)
 app.use('/api/schedules', scheduleRoutes)
 app.use('/api/live-classes', liveClassRoutes)
 app.use('/api/instructors', instructorRoutes)
-app.use("/api", chatRoutes);
+app.use("/api/chat", chatRoutes);
 connectCloudinary()
 
 // For local development only
