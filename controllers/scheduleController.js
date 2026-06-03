@@ -36,44 +36,53 @@ export const createSchedule = async (req, res) => {
 
 // ─── GET ALL SCHEDULES ───────────────────────────────
 // GET /api/schedules
-export const getAllSchedules = async (req, res) => {
+// controllers/scheduleController.js
+export const getSchedules = async (req, res) => {
   try {
-    const instructorFilter = req.query.instructor ? { instructor: req.query.instructor } : {}
-    const statusFilter = req.query.status ? { status: req.query.status } : {}
-    const typeFilter = req.query.type ? { type: req.query.type } : {}
-
-    const schedules = await Schedule.find({
-      ...instructorFilter,
-      ...statusFilter,
-      ...typeFilter,
-    })
-      .populate('instructor', 'bio designation')
-     
-      .sort({ startTime: 1 })
-
-    res.status(200).json({ success: true, total: schedules.length, schedules })
+    const schedules = await Schedule.find()
+      .populate({
+        path: 'instructor',
+        populate: {
+          path: 'user',
+          select: 'firstName lastName email profileImage username'
+        }
+      })
+      .sort({ startTime: 1 });
+    
+    res.status(200).json({
+      success: true,
+      total: schedules.length,
+      schedules
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
+    res.status(500).json({ success: false, message: error.message });
   }
-}
+};
 
-// ─── GET SCHEDULE BY ID ──────────────────────────────
-// GET /api/schedules/:id
+// For single schedule
 export const getScheduleById = async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id)
-      .populate('instructor', 'bio designation')
-      
-
+      .populate({
+        path: 'instructor',
+        populate: {
+          path: 'user',
+          select: 'firstName lastName email profileImage username'
+        }
+      });
+    
     if (!schedule) {
-      return res.status(404).json({ success: false, message: 'Schedule not found' })
+      return res.status(404).json({ success: false, message: 'Schedule not found' });
     }
-
-    res.status(200).json({ success: true, schedule })
+    
+    res.status(200).json({
+      success: true,
+      schedule
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
+    res.status(500).json({ success: false, message: error.message });
   }
-}
+};
 
 // ─── UPDATE SCHEDULE ─────────────────────────────────
 // PUT /api/schedules/:id
