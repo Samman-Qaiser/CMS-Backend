@@ -33,6 +33,8 @@ import chatRoutes from './routes/chatRoutes.js'
 import { initChatSocket } from './socket/chatSocket.js'
 import productCategoryRoutes from './routes/productCategoryRoutes.js'
 import productRoutes from './routes/productRoutes.js'
+import cartRoutes from './routes/cartRoutes.js'
+import wishlistRoutes from './routes/wishlistRoutes.js'
 import { Server } from 'socket.io'
 dotenv.config()
 
@@ -155,6 +157,8 @@ app.use('/api/instructors', instructorRoutes)
 app.use("/api/chat", chatRoutes);
 app.use('/api/product-categories', productCategoryRoutes)
 app.use('/api/products', productRoutes)
+app.use('/api/cart', cartRoutes)
+app.use('/api/wishlist', wishlistRoutes)
 connectCloudinary()
 
 // For local development only
