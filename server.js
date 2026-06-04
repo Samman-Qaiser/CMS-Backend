@@ -35,6 +35,9 @@ import productCategoryRoutes from './routes/productCategoryRoutes.js'
 import productRoutes from './routes/productRoutes.js'
 import cartRoutes from './routes/cartRoutes.js'
 import wishlistRoutes from './routes/wishlistRoutes.js'
+import couponRoutes from './routes/couponRoutes.js'
+import shippingAddressRoutes from './routes/shippingAddressRoutes.js'
+import orderRoutes from './routes/orderRoutes.js'
 import { Server } from 'socket.io'
 dotenv.config()
 
@@ -159,6 +162,9 @@ app.use('/api/product-categories', productCategoryRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/wishlist', wishlistRoutes)
+app.use('/api/coupons', couponRoutes)
+app.use('/api/shipping-addresses', shippingAddressRoutes)
+app.use('/api/orders', orderRoutes)
 connectCloudinary()
 
 // For local development only
