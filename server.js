@@ -31,6 +31,7 @@ import liveClassRoutes from './routes/liveClassRoutes.js'
 import instructorRoutes from './routes/instructorRoutes.js'
 import chatRoutes from './routes/chatRoutes.js'
 import { initChatSocket } from './socket/chatSocket.js'
+import productCategoryRoutes from './routes/productCategoryRoutes.js'
 import { Server } from 'socket.io'
 dotenv.config()
 
@@ -151,6 +152,7 @@ app.use('/api/schedules', scheduleRoutes)
 app.use('/api/live-classes', liveClassRoutes)
 app.use('/api/instructors', instructorRoutes)
 app.use("/api/chat", chatRoutes);
+app.use('/api/product-categories', productCategoryRoutes)
 connectCloudinary()
 
 // For local development only
