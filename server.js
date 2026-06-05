@@ -46,9 +46,7 @@ const server = http.createServer(app)
 const io = new Server(server, {
   cors: { origin: '*' }
 })
-app.use(express.json())        
-app.use(cookieParser())
-app.use(cors())
+
 initChatSocket(io)
 const PORT = process.env.PORT || 3000
 const URL = process.env.MONGODB_URL
@@ -111,7 +109,9 @@ app.use(async (req, res, next) => {
   }
 });
 
-
+app.use(express.json())        
+app.use(cookieParser())
+app.use(cors())
 
 app.get('/', (req, res) => {
   res.send("API Started working great")

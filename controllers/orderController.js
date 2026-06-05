@@ -24,7 +24,6 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ success: false, message: 'User, items and shipping address are required' })
     }
 
-    // Subtotal calculate
     let subtotal = 0
     const orderItems = []
 
@@ -46,10 +45,8 @@ export const createOrder = async (req, res) => {
       subtotal += product.price * item.quantity
     }
 
-    // Shipping cost
     const shippingCost = shippingMethod === 'flat_rate' ? 10 : 0
 
-    // Coupon discount
     let discount = 0
     let couponId = null
 
@@ -86,13 +83,11 @@ export const createOrder = async (req, res) => {
       notes,
     })
 
-    // Cart clear karo
     await Cart.findOneAndUpdate(
       { user },
       { items: [], totalPrice: 0, totalItems: 0 }
     )
 
-    // Email notification
     try {
       await resend.emails.send({
         from: 'CMS Shop <onboarding@resend.dev>',
@@ -110,8 +105,23 @@ export const createOrder = async (req, res) => {
     }
 
     res.status(201).json({ success: true, message: 'Order placed successfully', order })
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
+    // ← EXTENSIVE ERROR LOGGING
+    console.error('=== CREATE ORDER ERROR ===')
+    console.error('Message:', error.message)
+    console.error('Stack:', error.stack)
+    console.error('Name:', error.name)
+    console.error('req.body:', JSON.stringify(req.body, null, 2))
+    console.error('==========================')
+    
+    res.status(500).json({ 
+      success: false, 
+      message: error.message,
+      errorName: error.name,
+      errorStack: process.env.NODE_ENV !== 'production' ? error.stack : undefined,
+      receivedBody: req.body  // ← body dekho — undefined toh nahi?
+    })
   }
 }
 

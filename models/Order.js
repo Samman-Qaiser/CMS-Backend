@@ -102,12 +102,16 @@ const orderSchema = new mongoose.Schema(
 )
 
 // ─── Auto Order Number ────────────────────────────────
-orderSchema.pre('save', async function (next) {
-  if (!this.orderNumber) {
-    const lastOrder = await mongoose.model('Order').findOne().sort({ orderNumber: -1 })
-    this.orderNumber = lastOrder ? lastOrder.orderNumber + 1 : 181
+// NAYA - async ke saath next() hatao, try/catch add karo
+orderSchema.pre('save', async function () {
+  try {
+    if (!this.orderNumber) {
+      const lastOrder = await mongoose.model('Order').findOne().sort({ orderNumber: -1 })
+      this.orderNumber = lastOrder ? lastOrder.orderNumber + 1 : 181
+    }
+  } catch (error) {
+    throw error  // next() ki jagah throw karo
   }
-  next()
 })
 
 export default mongoose.model('Order', orderSchema)
